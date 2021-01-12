@@ -12,7 +12,6 @@ public class Rectangle extends Shape {
         this.height = height;
     }
 
-
     @Override
     public void draw() {
         System.out.println("\n");

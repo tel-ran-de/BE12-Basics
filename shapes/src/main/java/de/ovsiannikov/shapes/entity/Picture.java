@@ -28,6 +28,4 @@ public class Picture extends Shape {
 
         System.out.print("\n");
     }
-
-
 }

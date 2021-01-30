@@ -49,6 +49,9 @@ class FormController {
         if (response.ok) {
             this._init();
         }
+        formDom.elements.firstName.value = "";
+        formDom.elements.lastName.value = "";
+        formDom.elements.age.value = "";
     }
 
     edit(event) {

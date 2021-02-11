@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function main() {
     const htmlRenderer = new HtmlRenderer(contactTemplateDom, contactWrapperDom, formDom);
 
     const formController = new FormController(contactClient, htmlRenderer);
-    const contactController = new ContactController(htmlRenderer);
+    const contactController = new ContactController(htmlRenderer, contactClient);
 
 
     formDom.addEventListener("click", formController);
@@ -34,12 +34,17 @@ class ContactController {
 
     async remove(event) {
         const contactDom = event.target.closest(".real-contact");
-        let response = this.contactClient.remove(contactDom.contact);
+        const contact = contactDom.contact;
 
-        console.log(response);
+        const response = await this.contactClient.remove(contact);
 
-        //TODO complete. Take the contact id from the event.target (see 'toEditForm' from html renderer to get contactDom -> contact)
-        // then rerender all persons
+        if (response.ok) {
+            const responseAll = await this.contactClient.getAll();
+            if (responseAll.ok) {
+                const contacts = await responseAll.json();
+                this.htmlRenderer.renderContacts(contacts);
+            }
+        }
     }
 
     edit(event) {
@@ -98,7 +103,7 @@ class FormController {
         };
         const response = await this.contactClient.edit(contact);
         if (response.ok) {
-            this._init();
+            await this._init();
             this.htmlRenderer.toAddForm();
         }
     }
@@ -218,7 +223,7 @@ class ContactClient {
     }
 
     remove(contact) {
-        return fetch(ContactClient.CONTACTS_PATH + '/' + contact.id, {
+        return fetch(ContactClient.CONTACTS_PATH + `/${contact.id}`, {
             method: 'DELETE',
         });
     }

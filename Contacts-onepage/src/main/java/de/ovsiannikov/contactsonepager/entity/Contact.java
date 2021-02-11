@@ -5,13 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 public class Contact {
 
@@ -27,6 +24,9 @@ public class Contact {
 
     @Setter
     private Integer age;
+
+    @ManyToOne
+    User user;
 
     public Contact(String firstName, String lastName, Integer age) {
         this.firstName = firstName;

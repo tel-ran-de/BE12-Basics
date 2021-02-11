@@ -43,10 +43,23 @@ public class ContactRestController {
     }
 
     @GetMapping
-    public List<ContactDto> getAll() {
-        List<Contact> contacts = contactService.getAll();
+    public List<ContactDto> getAll(@RequestParam(required = false) String firstName, String lastName) {
+        List<Contact> contacts;
+        if (firstName != null && lastName == null) {
+            contacts = contactService.getAllByFirstName(firstName);
+        } else if (firstName == null && lastName != null) {
+            contacts = contactService.getAllByLastName(lastName);
+        } else if (firstName != null) {
+            contacts = contactService.getAllByLastNameAndFirstName(firstName, lastName);
+        } else
+            contacts = contactService.getAll();
+
+
         return contacts.stream()
-                .map(contact -> new ContactDto(contact.getId(), contact.getFirstName(), contact.getLastName(), contact.getAge()))
+                .map(contact -> new ContactDto(contact.getId(),
+                        contact.getFirstName(),
+                        contact.getLastName(),
+                        contact.getAge()))
                 .collect(Collectors.toList());
     }
 
@@ -63,9 +76,13 @@ public class ContactRestController {
 
     @DeleteMapping("{id}")
     public ContactDto remove(@PathVariable int id) {
-        ContactDto contactDto = get(id);
-        contactService.remove(id);
+        Contact contact = contactService.remove(id);
 
-        return contactDto;
+        return new ContactDto(
+                contact.getId(),
+                contact.getFirstName(),
+                contact.getLastName(),
+                contact.getAge()
+        );
     }
 }

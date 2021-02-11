@@ -49,4 +49,17 @@ public class ContactService {
 
         return contactForDelete;
     }
+
+    public List<Contact> getAllByFirstName(String firstName) {
+        return (List<Contact>) contactRepository.findByFirstNameIgnoreCase(firstName);
+    }
+
+    public List<Contact> getAllByLastName(String lastName) {
+        return (List<Contact>) contactRepository.findByLastNameIgnoreCase(lastName);
+
+    }
+
+    public List<Contact> getAllByLastNameAndFirstName(String firstName, String lastName) {
+        return (List<Contact>) contactRepository.findByFirstNameAndLastNameIgnoreCase(firstName, lastName);
+    }
 }
